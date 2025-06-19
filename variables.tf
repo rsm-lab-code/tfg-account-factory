@@ -13,8 +13,7 @@ variable "account_requests" {
     email       = string
     department  = string
     environment = string  # "prod" or "nonprod"
-    purpose     = string
-    owner       = string
+    description     = string
   }))
   default = {}
   

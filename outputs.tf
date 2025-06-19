@@ -47,6 +47,7 @@ output "created_accounts" {
       email       = account.email
       department  = account.tags.Department
       environment = account.tags.Environment
+      description = account.tags.Description
       parent_ou   = account.parent_id
     }
   }
