@@ -66,10 +66,7 @@ resource "aws_organizations_account" "accounts" {
 
   name      = each.value.name
   email     = each.value.email
-  parent_id = each.value.environment == "prod" ? 
-              aws_organizations_organizational_unit.dept_prod_ou[each.value.department].id :
-              aws_organizations_organizational_unit.dept_nonprod_ou[each.value.department].id
-
+  parent_id = each.value.environment == "prod" ? aws_organizations_organizational_unit.dept_prod_ou[each.value.department].id : aws_organizations_organizational_unit.dept_nonprod_ou[each.value.department].id
   # Prevent accidental account deletion
   lifecycle {
     prevent_destroy = true
