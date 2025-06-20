@@ -76,7 +76,7 @@ resource "aws_organizations_account" "accounts" {
     Name        = each.value.name
     Department  = each.value.department
     Environment = each.value.environment
-    description     = each.value.description
+    Description = each.value.description
     ManagedBy   = "terraform"
   }
 }
