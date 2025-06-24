@@ -1,27 +1,13 @@
-# Department configuration
-variable "departments" {
-  description = "Set of department names to create OUs for"
-  type        = set(string)
-  default     = ["IT", "Finance", "HR", "Marketing"]
-}
-
 # New account requests
 variable "account_requests" {
   description = "Map of new accounts to create"
   type = map(object({
-    name        = string
-    email       = string
-    department  = string
-    environment = string  # "prod" or "nonprod"
-    description     = string
+    name         = string
+    email        = string
+    business_unit = string
+    environment  = string
+    target_ou    = string  # Available: prod/nonprod business units, sandbox, security, infrastructure, workloads, transitional, suspended, policy-staging, exceptions, trailblazer variants
+    description  = string
   }))
   default = {}
-  
-  validation {
-    condition = alltrue([
-      for account in var.account_requests : 
-      contains(["prod", "nonprod"], account.environment)
-    ])
-    error_message = "Environment must be either 'prod' or 'nonprod'."
-  }
 }
