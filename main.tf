@@ -3,80 +3,94 @@ data "aws_organizations_organization" "main" {
   provider = aws.management_account
 }
 
-# Get Non-Production OU
-data "aws_organizations_organizational_unit" "nonprod" {
+# Get Workloads OU
+data "aws_organizations_organizational_unit" "workloads" {
   provider = aws.management_account
-  name     = "Non-Production"
+  name     = "Workloads"
   parent_id = data.aws_organizations_organization.main.roots[0].id
 }
 
-# Get Production OU  
-data "aws_organizations_organizational_unit" "prod" {
+# Get Root-level Production OU
+data "aws_organizations_organizational_unit" "root_production" {
   provider = aws.management_account
   name     = "Production"
   parent_id = data.aws_organizations_organization.main.roots[0].id
 }
 
-# Get Non-Production child OUs
+# Get Non-Production OU (under Workloads)
+data "aws_organizations_organizational_unit" "workloads_nonprod" {
+  provider = aws.management_account
+  name     = "Non-Production"
+  parent_id = data.aws_organizations_organizational_unit.workloads.id
+}
+
+# Get Production OU (under Workloads)
+data "aws_organizations_organizational_unit" "workloads_production" {
+  provider = aws.management_account
+  name     = "Production"
+  parent_id = data.aws_organizations_organizational_unit.workloads.id
+}
+
+# Get Non-Production child OUs (under Workloads, Non-Production)
 data "aws_organizations_organizational_unit" "usal_nonprod" {
   provider = aws.management_account
   name     = "USAL-Non-Production"
-  parent_id = data.aws_organizations_organizational_unit.nonprod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_nonprod.id
 }
 
 data "aws_organizations_organizational_unit" "gst_nonprod" {
   provider = aws.management_account
   name     = "GST-Non-Production"
-  parent_id = data.aws_organizations_organizational_unit.nonprod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_nonprod.id
 }
 
 data "aws_organizations_organizational_unit" "tfg_nonprod" {
   provider = aws.management_account
   name     = "TFG-Non-Production"
-  parent_id = data.aws_organizations_organizational_unit.nonprod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_nonprod.id
 }
 
 data "aws_organizations_organizational_unit" "copilotint1_nonprod" {
   provider = aws.management_account
   name     = "CoPilotInt1-Non-Production"
-  parent_id = data.aws_organizations_organizational_unit.nonprod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_nonprod.id
 }
 
 data "aws_organizations_organizational_unit" "gsfs_nonprod" {
   provider = aws.management_account
   name     = "GSFS-Non-Production"
-  parent_id = data.aws_organizations_organizational_unit.nonprod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_nonprod.id
 }
 
-# Get Production child OUs
+# Get Production child OUs (under Workloads, Production)
 data "aws_organizations_organizational_unit" "gst_prod" {
   provider = aws.management_account
   name     = "GST-Production"
-  parent_id = data.aws_organizations_organizational_unit.prod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_production.id
 }
 
 data "aws_organizations_organizational_unit" "copilotint1_prod" {
   provider = aws.management_account
   name     = "CoPilotInt1-Production"
-  parent_id = data.aws_organizations_organizational_unit.prod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_production.id
 }
 
 data "aws_organizations_organizational_unit" "tfg_prod" {
   provider = aws.management_account
   name     = "TFG-Production"
-  parent_id = data.aws_organizations_organizational_unit.prod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_production.id
 }
 
 data "aws_organizations_organizational_unit" "gsfs_prod" {
   provider = aws.management_account
   name     = "GSFS-Production"
-  parent_id = data.aws_organizations_organizational_unit.prod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_production.id
 }
 
 data "aws_organizations_organizational_unit" "usal_prod" {
   provider = aws.management_account
   name     = "USAL-Production"
-  parent_id = data.aws_organizations_organizational_unit.prod.id
+  parent_id = data.aws_organizations_organizational_unit.workloads_production.id
 }
 
 # Get other root-level OUs
@@ -107,12 +121,6 @@ data "aws_organizations_organizational_unit" "security" {
 data "aws_organizations_organizational_unit" "infrastructure" {
   provider = aws.management_account
   name     = "Infrastructure"
-  parent_id = data.aws_organizations_organization.main.roots[0].id
-}
-
-data "aws_organizations_organizational_unit" "workloads" {
-  provider = aws.management_account
-  name     = "Workloads"
   parent_id = data.aws_organizations_organization.main.roots[0].id
 }
 
@@ -168,14 +176,14 @@ data "aws_organizations_organizational_unit" "trailblazer_sandbox" {
 # OU lookup map
 locals {
   ou_map = {
-    # Non-Production OUs
+    # Non-Production OUs (under Workloads, Non-Production)
     "usal-nonprod"      = data.aws_organizations_organizational_unit.usal_nonprod.id
     "gst-nonprod"       = data.aws_organizations_organizational_unit.gst_nonprod.id
     "tfg-nonprod"       = data.aws_organizations_organizational_unit.tfg_nonprod.id
     "copilotint1-nonprod" = data.aws_organizations_organizational_unit.copilotint1_nonprod.id
     "gsfs-nonprod"      = data.aws_organizations_organizational_unit.gsfs_nonprod.id
     
-    # Production OUs
+    # Production OUs (under Workloads, Production)
     "gst-prod"          = data.aws_organizations_organizational_unit.gst_prod.id
     "copilotint1-prod"  = data.aws_organizations_organizational_unit.copilotint1_prod.id
     "tfg-prod"          = data.aws_organizations_organizational_unit.tfg_prod.id
@@ -183,6 +191,7 @@ locals {
     "usal-prod"         = data.aws_organizations_organizational_unit.usal_prod.id
     
     # Root-level OUs
+    "root-production"   = data.aws_organizations_organizational_unit.root_production.id
     "sandbox"           = data.aws_organizations_organizational_unit.sandbox.id
     "suspended"         = data.aws_organizations_organizational_unit.suspended.id
     "transitional"      = data.aws_organizations_organizational_unit.transitional.id
