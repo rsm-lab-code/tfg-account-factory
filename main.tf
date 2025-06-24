@@ -4,6 +4,7 @@ data "aws_organizations_organization" "main" {
 }
 
 # Create main OUs (prod and nonprod)
+/*
 resource "aws_organizations_organizational_unit" "prod_ou" {
   provider  = aws.management_account
   name      = "prod-ou"
@@ -15,7 +16,8 @@ resource "aws_organizations_organizational_unit" "prod_ou" {
     ManagedBy   = "terraform"
   }
 }
-
+*/
+/*
 resource "aws_organizations_organizational_unit" "nonprod_ou" {
   provider  = aws.management_account
   name      = "nonprod-ou"
@@ -27,7 +29,8 @@ resource "aws_organizations_organizational_unit" "nonprod_ou" {
     ManagedBy   = "terraform"
   }
 }
-
+*/
+/*
 # Create department-specific child OUs
 resource "aws_organizations_organizational_unit" "dept_prod_ou" {
   provider  = aws.management_account
@@ -43,7 +46,8 @@ resource "aws_organizations_organizational_unit" "dept_prod_ou" {
     ManagedBy   = "terraform"
   }
 }
-
+*/
+/*
 resource "aws_organizations_organizational_unit" "dept_nonprod_ou" {
   provider  = aws.management_account
   for_each  = var.departments
@@ -58,7 +62,7 @@ resource "aws_organizations_organizational_unit" "dept_nonprod_ou" {
     ManagedBy   = "terraform"
   }
 }
-
+*/
 # Create accounts based on requests
 resource "aws_organizations_account" "accounts" {
   provider  = aws.management_account
