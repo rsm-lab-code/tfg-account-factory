@@ -220,9 +220,9 @@ resource "aws_organizations_account" "accounts" {
   email     = each.value.email
   parent_id = local.ou_map[each.value.target_ou]
   
-  lifecycle {
-    prevent_destroy = true
-  }
+  #  lifecycle {
+  # prevent_destroy = true
+  #}
 
   tags = {
     Name         = each.value.name
